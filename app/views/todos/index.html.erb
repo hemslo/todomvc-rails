@@ -1,7 +1,9 @@
 <section class="todoapp">
   <header class="header">
     <h1>todos</h1>
-    <input class="new-todo" placeholder="What needs to be done?" autofocus>
+    <%= form_for(Todo.new) do |f| %>
+      <%= f.text_field :title, class: "new-todo", placeholder: "What needs to be done?", autofocus: true %>
+    <% end %>
   </header>
   <% if @todos %>
     <section class="main">
