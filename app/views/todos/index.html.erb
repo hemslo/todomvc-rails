@@ -5,8 +5,11 @@
   </header>
   <% if @todos.present? %>
     <section class="main">
-      <input class="toggle-all" type="checkbox">
-      <label for="toggle-all">Mark all as complete</label>
+      <%= form_tag(toggle_all_todos_path, method: :put) do -%>
+        <%- status = @todos.all?(&:completed) %>
+        <%= check_box_tag 'completed', '1', status, id: 'toggle-all', class: 'toggle-all', onchange: 'this.form.submit()' %>
+        <%= label_tag 'toggle-all', "Mark all as#{status ? ' not' : nil} complete" %>
+      <% end -%>
       <ul class="todo-list">
         <% @todos.each do |todo| %>
           <%= content_tag(:li, class: todo.completed ? 'completed' : nil) do -%>

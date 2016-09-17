@@ -4,7 +4,7 @@ class TodosController < ApplicationController
   # GET /todos
   # GET /todos.json
   def index
-    @todos = Todo.all
+    load_todos
     @todo = Todo.new
   end
 
@@ -33,7 +33,7 @@ class TodosController < ApplicationController
         format.json { render :show, status: :created, location: @todo }
       else
         format.html do
-          @todos = Todo.all
+          load_todos
           render :index
         end
         format.json { render json: @todo.errors, status: :unprocessable_entity }
@@ -65,6 +65,22 @@ class TodosController < ApplicationController
     end
   end
 
+  # PATCH/PUT /todos/toggle-all
+  # PATCH/PUT /todos/toggle-all.json
+  def toggle_all
+    load_todos
+    @todos.each { |e| e.completed = params[:completed] || false }
+    respond_to do |format|
+      if save_all_todos
+        format.html { redirect_to todos_url }
+        format.json { render :index }
+      else
+        format.html { render :index }
+        format.json { render json: @todos.map(&:errors), status: :unprocessable_entity }
+      end
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_todo
@@ -74,5 +90,17 @@ class TodosController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def todo_params
       params.require(:todo).permit(:title, :completed)
+    end
+
+    def load_todos
+      @todos = Todo.all
+    end
+
+    def save_all_todos
+      result = false
+      Todo.transaction do
+        result = @todos.all?(&:save)
+      end
+      result
     end
 end
