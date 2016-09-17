@@ -11,17 +11,5 @@
     </div>
   <% end %>
 
-  <div class="field">
-    <%= f.label :title %>
-    <%= f.text_field :title %>
-  </div>
-
-  <div class="field">
-    <%= f.label :completed %>
-    <%= f.check_box :completed %>
-  </div>
-
-  <div class="actions">
-    <%= f.submit %>
-  </div>
+  <%= f.text_field :title, class: "new-todo", placeholder: "What needs to be done?", autofocus: true %>
 <% end %>
